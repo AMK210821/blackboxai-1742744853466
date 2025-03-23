@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - VREC Library Management System</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .register-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .form-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container min-h-screen flex items-center justify-center p-4">
+        <div class="form-container w-full max-w-2xl rounded-xl shadow-2xl p-8">
+            <!-- Logo and Title -->
+            <div class="text-center mb-8">
+                <i class="fas fa-book-reader text-5xl text-blue-600 mb-4"></i>
+                <h1 class="text-2xl font-bold text-gray-800">VREC Library Management System</h1>
+                <p class="text-gray-600 mt-2">Create your account</p>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registerForm" class="space-y-6">
+                <!-- Role Selection -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Register As</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" 
+                                class="role-btn py-3 px-4 rounded-lg border-2 border-gray-300 hover:border-blue-500 focus:outline-none transition-colors duration-200"
+                                data-role="faculty">
+                            <i class="fas fa-chalkboard-teacher text-2xl mb-2"></i>
+                            <span class="block">Faculty</span>
+                        </button>
+                        <button type="button" 
+                                class="role-btn py-3 px-4 rounded-lg border-2 border-gray-300 hover:border-blue-500 focus:outline-none transition-colors duration-200"
+                                data-role="student">
+                            <i class="fas fa-user-graduate text-2xl mb-2"></i>
+                            <span class="block">Student</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Full Name -->
+                    <div>
+                        <label for="name" class="block text-gray-700 text-sm font-semibold mb-2">Full Name</label>
+                        <input type="text" 
+                               id="name" 
+                               class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                               placeholder="Enter your full name">
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Email Address</label>
+                        <input type="email" 
+                               id="email" 
+                               class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                               placeholder="Enter your email">
+                    </div>
+
+                    <!-- Stream -->
+                    <div>
+                        <label for="stream" class="block text-gray-700 text-sm font-semibold mb-2">Stream</label>
+                        <select id="stream" 
+                                class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="">Select Stream</option>
+                        </select>
+                    </div>
+
+                    <!-- Branch -->
+                    <div>
+                        <label for="branch" class="block text-gray-700 text-sm font-semibold mb-2">Branch</label>
+                        <select id="branch" 
+                                class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="">Select Branch</option>
+                        </select>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
+                        <div class="relative">
+                            <input type="password" 
+                                   id="password" 
+                                   class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                   placeholder="Create a password">
+                            <button type="button" 
+                                    id="togglePassword"
+                                    class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div>
+                        <label for="confirmPassword" class="block text-gray-700 text-sm font-semibold mb-2">Confirm Password</label>
+                        <div class="relative">
+                            <input type="password" 
+                                   id="confirmPassword" 
+                                   class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                   placeholder="Confirm your password">
+                            <button type="button" 
+                                    id="toggleConfirmPassword"
+                                    class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                        class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Account
+                </button>
+
+                <!-- Login Link -->
+                <div class="text-center">
+                    <p class="text-gray-600">
+                        Already have an account? 
+                        <a href="/login" class="text-blue-600 hover:text-blue-700 font-semibold">Login here</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <script>
+        // Toast notification function
+        function showToast(message, type = 'error') {
+            const toast = document.createElement('div');
+            toast.className = `${type === 'error' ? 'bg-red-500' : 'bg-green-500'} text-white px-6 py-3 rounded-lg shadow-lg mb-3`;
+            toast.style.animation = 'slideIn 0.3s ease-out';
+            toast.textContent = message;
+
+            const container = document.getElementById('toastContainer');
+            container.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Role selection handling
+        const roleButtons = document.querySelectorAll('.role-btn');
+        let selectedRole = null;
+
+        roleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                roleButtons.forEach(btn => {
+                    btn.classList.remove('border-blue-500', 'bg-blue-50');
+                });
+                button.classList.add('border-blue-500', 'bg-blue-50');
+                selectedRole = button.dataset.role;
+            });
+        });
+
+        // Password visibility toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        function togglePasswordVisibility(input, button) {
+            const type = input.type === 'password' ? 'text' : 'password';
+            input.type = type;
+            button.innerHTML = `<i class="fas fa-${type === 'password' ? 'eye' : 'eye-slash'} text-gray-400 hover:text-gray-600"></i>`;
+        }
+
+        togglePassword.addEventListener('click', () => togglePasswordVisibility(passwordInput, togglePassword));
+        toggleConfirmPassword.addEventListener('click', () => togglePasswordVisibility(confirmPasswordInput, toggleConfirmPassword));
+
+        // Load streams and branches
+        async function loadAcademicData() {
+            try {
+                const response = await fetch('/api/academic/streams');
+                const data = await response.json();
+                
+                const streamSelect = document.getElementById('stream');
+                streamSelect.innerHTML = `
+                    <option value="">Select Stream</option>
+                    ${data.streams.map(stream => `
+                        <option value="${stream.stream_id}">${stream.name}</option>
+                    `).join('')}
+                `;
+                
+                // Update branches based on selected stream
+                streamSelect.addEventListener('change', async (e) => {
+                    const streamId = e.target.value;
+                    if (!streamId) {
+                        document.getElementById('branch').innerHTML = '<option value="">Select Branch</option>';
+                        return;
+                    }
+                    
+                    const coursesResponse = await fetch(`/api/academic/courses?stream_id=${streamId}`);
+                    const coursesData = await coursesResponse.json();
+                    
+                    document.getElementById('branch').innerHTML = `
+                        <option value="">Select Branch</option>
+                        ${coursesData.courses.map(course => `
+                            <option value="${course.course_id}">${course.name}</option>
+                        `).join('')}
+                    `;
+                });
+                
+            } catch (error) {
+                console.error('Error loading academic data:', error);
+                showToast('Failed to load academic data');
+            }
+        }
+
+        // Form validation and submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedRole) {
+                showToast('Please select a role');
+                return;
+            }
+
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                stream: document.getElementById('stream').value,
+                branch: document.getElementById('branch').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                role: selectedRole
+            };
+
+            // Basic validation
+            if (!formData.name || !formData.email || !formData.stream || !formData.branch || !formData.password) {
+                showToast('Please fill in all fields');
+                return;
+            }
+
+            if (formData.password !== formData.confirmPassword) {
+                showToast('Passwords do not match');
+                return;
+            }
+
+            if (formData.password.length < 6) {
+                showToast('Password must be at least 6 characters long');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Registration failed');
+                }
+
+                showToast('Registration successful! Redirecting to login...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+
+            } catch (error) {
+                showToast(error.message);
+            }
+        });
+
+        // Initialize
+        loadAcademicData();
+    </script>
+</body>
+</html>
