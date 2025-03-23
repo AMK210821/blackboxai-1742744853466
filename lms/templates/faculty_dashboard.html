@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+{% block title %}Faculty Dashboard - VREC LMS{% endblock %}
+
+{% block sidebar %}
+<!-- Faculty Sidebar Navigation -->
+<div class="space-y-4">
+    <!-- Dashboard Overview -->
+    <a href="#overview" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+        <i class="fas fa-home w-6"></i>
+        <span>Overview</span>
+    </a>
+
+    <!-- My Books -->
+    <div class="space-y-2">
+        <div class="text-xs uppercase text-gray-500 font-semibold px-2">My Books</div>
+        <a href="#borrowed" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-book-reader w-6"></i>
+            <span>Borrowed Books</span>
+        </a>
+        <a href="#history" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-history w-6"></i>
+            <span>History</span>
+        </a>
+    </div>
+
+    <!-- Book Search -->
+    <div class="space-y-2">
+        <div class="text-xs uppercase text-gray-500 font-semibold px-2">Library</div>
+        <a href="#search" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-search w-6"></i>
+            <span>Search Books</span>
+        </a>
+        <a href="#preorder" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-shopping-cart w-6"></i>
+            <span>Preorder Books</span>
+        </a>
+    </div>
+
+    <!-- Profile -->
+    <div class="space-y-2">
+        <div class="text-xs uppercase text-gray-500 font-semibold px-2">Account</div>
+        <a href="#profile" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-user w-6"></i>
+            <span>My Profile</span>
+        </a>
+        <a href="#settings" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-cog w-6"></i>
+            <span>Settings</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Faculty Dashboard Content -->
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-800">Faculty Dashboard</h1>
+        <div class="flex space-x-4">
+            <button id="searchBooksBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                <i class="fas fa-search mr-2"></i>Search Books
+            </button>
+            <button id="preorderBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200">
+                <i class="fas fa-shopping-cart mr-2"></i>Preorder
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Currently Borrowed -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Currently Borrowed</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="currentlyBorrowed">Loading...</h3>
+                </div>
+                <div class="bg-blue-100 p-3 rounded-full">
+                    <i class="fas fa-book text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Due Soon -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Due Soon</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="dueSoon">Loading...</h3>
+                </div>
+                <div class="bg-yellow-100 p-3 rounded-full">
+                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Borrowed -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Total Borrowed</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="totalBorrowed">Loading...</h3>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full">
+                    <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currently Borrowed Books -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold text-gray-800">Currently Borrowed Books</h2>
+            <button class="text-blue-600 hover:text-blue-800 transition duration-200">
+                View All <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left text-sm font-semibold text-gray-600 border-b">
+                        <th class="pb-3">Book Title</th>
+                        <th class="pb-3">Borrowed Date</th>
+                        <th class="pb-3">Due Date</th>
+                        <th class="pb-3">Status</th>
+                        <th class="pb-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="currentBorrowedBooks">
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-gray-500">Loading books...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Book Search and Preorder -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Book Search -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Quick Search</h2>
+            <div class="space-y-4">
+                <div class="relative">
+                    <input type="text" 
+                           id="searchInput" 
+                           class="w-full pl-10 pr-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                           placeholder="Search by title, author, or subject...">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <div id="searchResults" class="space-y-2 max-h-64 overflow-y-auto"></div>
+            </div>
+        </div>
+
+        <!-- Preorder Section -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Quick Preorder</h2>
+            <div class="space-y-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <p class="text-sm text-blue-800">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Preorder books for ₹10 and secure them until 3:30 PM
+                    </p>
+                </div>
+                <div id="preorderSection" class="space-y-4">
+                    <!-- Preorder content will be dynamically loaded -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- QR Code Payment Modal -->
+<div id="qrPaymentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">Complete Payment</h3>
+            <button class="text-gray-500 hover:text-gray-700" onclick="closeQRModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="space-y-4 text-center">
+            <div id="qrCode" class="mx-auto w-64 h-64 bg-gray-100 flex items-center justify-center">
+                <!-- QR Code will be generated here -->
+            </div>
+            <div class="text-sm text-gray-600">
+                <p>Scan QR code to pay ₹10</p>
+                <p class="mt-2">Book will be reserved until 3:30 PM</p>
+            </div>
+            <button onclick="confirmPayment()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">
+                Confirm Payment
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+<script>
+    // Load Dashboard Data
+    async function loadDashboardData() {
+        try {
+            const userId = localStorage.getItem('userId');
+            const transactions = await api.get(`/transactions/user/${userId}`);
+            
+            // Update statistics
+            const currentlyBorrowed = transactions.transactions.filter(t => t.status === 'Issued').length;
+            const dueSoon = transactions.transactions.filter(t => {
+                if (t.status !== 'Issued') return false;
+                const dueDate = new Date(t.issue_date);
+                dueDate.setDate(dueDate.getDate() + 14); // 14 days loan period
+                const now = new Date();
+                const daysUntilDue = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+                return daysUntilDue <= 3 && daysUntilDue > 0;
+            }).length;
+            
+            document.getElementById('currentlyBorrowed').textContent = currentlyBorrowed;
+            document.getElementById('dueSoon').textContent = dueSoon;
+            document.getElementById('totalBorrowed').textContent = transactions.transactions.length;
+            
+            // Update borrowed books table
+            updateBorrowedBooksTable(transactions.transactions);
+            
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+            showToast('Failed to load dashboard data', 'error');
+        }
+    }
+
+    // Update Borrowed Books Table
+    function updateBorrowedBooksTable(transactions) {
+        const tbody = document.getElementById('currentBorrowedBooks');
+        const currentTransactions = transactions.filter(t => t.status === 'Issued');
+        
+        if (currentTransactions.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-gray-500">No books currently borrowed</td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = currentTransactions.map(transaction => {
+            const issueDate = new Date(transaction.issue_date);
+            const dueDate = new Date(issueDate);
+            dueDate.setDate(dueDate.getDate() + 14);
+            
+            const now = new Date();
+            const daysUntilDue = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+            const statusClass = daysUntilDue <= 3 ? 'text-yellow-600 bg-yellow-100' : 
+                              daysUntilDue <= 0 ? 'text-red-600 bg-red-100' : 
+                              'text-green-600 bg-green-100';
+            
+            return `
+                <tr class="border-b">
+                    <td class="py-3">${transaction.book_title}</td>
+                    <td class="py-3">${issueDate.toLocaleDateString()}</td>
+                    <td class="py-3">${dueDate.toLocaleDateString()}</td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 rounded-full text-sm ${statusClass}">
+                            ${daysUntilDue <= 0 ? 'Overdue' : `${daysUntilDue} days left`}
+                        </span>
+                    </td>
+                    <td class="py-3">
+                        <button onclick="viewBookDetails('${transaction.book_id}')"
+                                class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // Book Search
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(async () => {
+            const query = e.target.value.trim();
+            if (query.length < 2) {
+                document.getElementById('searchResults').innerHTML = '';
+                return;
+            }
+            
+            try {
+                const response = await api.get(`/books?search=${encodeURIComponent(query)}`);
+                const books = response.books;
+                
+                const resultsDiv = document.getElementById('searchResults');
+                if (books.length === 0) {
+                    resultsDiv.innerHTML = `
+                        <div class="text-center text-gray-500 py-4">
+                            No books found matching "${query}"
+                        </div>
+                    `;
+                    return;
+                }
+                
+                resultsDiv.innerHTML = books.map(book => `
+                    <div class="flex justify-between items-center p-3 hover:bg-gray-50 rounded-lg">
+                        <div>
+                            <h4 class="font-medium text-gray-800">${book.title}</h4>
+                            <p class="text-sm text-gray-600">${book.author}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-sm ${
+                            book.status === 'Available' ? 'text-green-600 bg-green-100' :
+                            book.status === 'Issued' ? 'text-red-600 bg-red-100' :
+                            'text-yellow-600 bg-yellow-100'
+                        }">
+                            ${book.status}
+                        </span>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error searching books:', error);
+                showToast('Failed to search books', 'error');
+            }
+        }, 300);
+    });
+
+    // QR Code Payment
+    function showQRPayment(bookId) {
+        const modal = document.getElementById('qrPaymentModal');
+        modal.classList.remove('hidden');
+        
+        // Generate QR code for payment
+        const qrContainer = document.getElementById('qrCode');
+        qrContainer.innerHTML = '';
+        
+        // Example UPI payment link
+        const upiLink = `upi://pay?pa=library@upi&pn=VREC Library&am=10.00&cu=INR&tn=Book Preorder ${bookId}`;
+        
+        QRCode.toCanvas(qrContainer, upiLink, {
+            width: 256,
+            margin: 1,
+            color: {
+                dark: '#000000',
+                light: '#ffffff'
+            }
+        });
+    }
+
+    function closeQRModal() {
+        document.getElementById('qrPaymentModal').classList.add('hidden');
+    }
+
+    async function confirmPayment() {
+        try {
+            // Simulate payment verification
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            showToast('Payment successful! Book has been preordered.', 'success');
+            closeQRModal();
+            loadDashboardData(); // Refresh dashboard data
+            
+        } catch (error) {
+            console.error('Error confirming payment:', error);
+            showToast('Failed to confirm payment', 'error');
+        }
+    }
+
+    // Initialize Dashboard
+    loadDashboardData();
+</script>
+{% endblock %}
