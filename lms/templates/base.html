@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VREC Library Management System{% endblock %}</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .toast {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo and Title -->
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-book-reader text-2xl"></i>
+                    <h1 class="text-xl font-semibold">VREC Library Management System</h1>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <span id="userInfo" class="hidden md:inline-block">
+                        <i class="fas fa-user mr-2"></i>
+                        <span id="userName">Loading...</span>
+                    </span>
+                    <button id="logoutBtn" class="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg transition duration-200">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-gray-800 text-white w-64 min-h-screen p-4">
+            <nav class="space-y-2">
+                {% block sidebar %}{% endblock %}
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-4 rounded-lg flex items-center space-x-3">
+            <div class="loading-spinner w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+            <span class="text-gray-700">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Base JavaScript -->
+    <script>
+        // Utility Functions
+        const showLoading = () => document.getElementById('loadingOverlay').classList.remove('hidden');
+        const hideLoading = () => document.getElementById('loadingOverlay').classList.add('hidden');
+
+        const showToast = (message, type = 'success') => {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg mb-3 toast`;
+            toast.textContent = message;
+
+            const container = document.getElementById('toastContainer');
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        };
+
+        // API Helper
+        const api = {
+            baseUrl: '/api',
+            
+            async request(endpoint, options = {}) {
+                const token = localStorage.getItem('token');
+                
+                const defaultOptions = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token ? `Bearer ${token}` : ''
+                    }
+                };
+
+                try {
+                    showLoading();
+                    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+                        ...defaultOptions,
+                        ...options,
+                        headers: {
+                            ...defaultOptions.headers,
+                            ...(options.headers || {})
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'API request failed');
+                    }
+
+                    return data;
+                } catch (error) {
+                    showToast(error.message, 'error');
+                    throw error;
+                } finally {
+                    hideLoading();
+                }
+            },
+
+            get(endpoint) {
+                return this.request(endpoint, { method: 'GET' });
+            },
+
+            post(endpoint, data) {
+                return this.request(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+            },
+
+            put(endpoint, data) {
+                return this.request(endpoint, {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
+                });
+            },
+
+            delete(endpoint) {
+                return this.request(endpoint, { method: 'DELETE' });
+            }
+        };
+
+        // Authentication
+        const auth = {
+            async checkAuth() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                try {
+                    const data = await api.get('/auth/profile');
+                    document.getElementById('userName').textContent = data.user.name;
+                    document.getElementById('userInfo').classList.remove('hidden');
+                } catch (error) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                }
+            },
+
+            async logout() {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
+        };
+
+        // Event Listeners
+        document.getElementById('logoutBtn').addEventListener('click', auth.logout);
+
+        // Initialize
+        auth.checkAuth();
+
+        {% block extra_js %}{% endblock %}
+    </script>
+</body>
+</html>
