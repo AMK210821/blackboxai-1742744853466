@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - VREC LMS{% endblock %}
+
+{% block sidebar %}
+<!-- Admin Sidebar Navigation -->
+<div class="space-y-4">
+    <!-- Dashboard Overview -->
+    <a href="#overview" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+        <i class="fas fa-chart-line w-6"></i>
+        <span>Overview</span>
+    </a>
+
+    <!-- Book Management -->
+    <div class="space-y-2">
+        <div class="text-xs uppercase text-gray-500 font-semibold px-2">Book Management</div>
+        <a href="#books" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-books w-6"></i>
+            <span>Books</span>
+        </a>
+        <a href="#allotment" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-hand-holding-box w-6"></i>
+            <span>Book Allotment</span>
+        </a>
+        <a href="#returns" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-undo w-6"></i>
+            <span>Returns</span>
+        </a>
+    </div>
+
+    <!-- Academic Management -->
+    <div class="space-y-2">
+        <div class="text-xs uppercase text-gray-500 font-semibold px-2">Academic</div>
+        <a href="#streams" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-graduation-cap w-6"></i>
+            <span>Streams</span>
+        </a>
+        <a href="#courses" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-book w-6"></i>
+            <span>Courses</span>
+        </a>
+        <a href="#subjects" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-bookmark w-6"></i>
+            <span>Subjects</span>
+        </a>
+    </div>
+
+    <!-- Users & Preorders -->
+    <div class="space-y-2">
+        <div class="text-xs uppercase text-gray-500 font-semibold px-2">Users & Orders</div>
+        <a href="#users" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-users w-6"></i>
+            <span>Users</span>
+        </a>
+        <a href="#preorders" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-shopping-cart w-6"></i>
+            <span>Preorders</span>
+        </a>
+    </div>
+
+    <!-- Reports -->
+    <div class="space-y-2">
+        <div class="text-xs uppercase text-gray-500 font-semibold px-2">Reports</div>
+        <a href="#transactions" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-history w-6"></i>
+            <span>Transactions</span>
+        </a>
+        <a href="#statistics" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-chart-bar w-6"></i>
+            <span>Statistics</span>
+        </a>
+    </div>
+
+    <!-- Settings -->
+    <div class="space-y-2">
+        <div class="text-xs uppercase text-gray-500 font-semibold px-2">Settings</div>
+        <a href="#profile" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-user-cog w-6"></i>
+            <span>Profile</span>
+        </a>
+        <a href="#system" class="sidebar-item flex items-center space-x-3 text-gray-300 hover:text-white p-2 rounded-lg">
+            <i class="fas fa-cogs w-6"></i>
+            <span>System</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Content -->
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+        <div class="flex space-x-4">
+            <button id="scanBarcodeBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                <i class="fas fa-barcode mr-2"></i>Scan Barcode
+            </button>
+            <button id="exportDataBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200">
+                <i class="fas fa-file-export mr-2"></i>Export Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Total Books -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Total Books</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="totalBooks">Loading...</h3>
+                </div>
+                <div class="bg-blue-100 p-3 rounded-full">
+                    <i class="fas fa-book text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Issued -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Books Issued</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="booksIssued">Loading...</h3>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full">
+                    <i class="fas fa-hand-holding text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Overdue -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Books Overdue</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="booksOverdue">Loading...</h3>
+                </div>
+                <div class="bg-red-100 p-3 rounded-full">
+                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Users -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Active Users</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="activeUsers">Loading...</h3>
+                </div>
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <i class="fas fa-users text-purple-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold text-gray-800">Recent Transactions</h2>
+            <button class="text-blue-600 hover:text-blue-800 transition duration-200">
+                View All <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left text-sm font-semibold text-gray-600 border-b">
+                        <th class="pb-3">Book Title</th>
+                        <th class="pb-3">User</th>
+                        <th class="pb-3">Status</th>
+                        <th class="pb-3">Date</th>
+                        <th class="pb-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="recentTransactions">
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-gray-500">Loading transactions...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Quick Actions and Notifications -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button class="flex items-center justify-center space-x-2 bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition duration-200">
+                    <i class="fas fa-plus text-blue-600"></i>
+                    <span>Add Book</span>
+                </button>
+                <button class="flex items-center justify-center space-x-2 bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition duration-200">
+                    <i class="fas fa-user-plus text-green-600"></i>
+                    <span>Add User</span>
+                </button>
+                <button class="flex items-center justify-center space-x-2 bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition duration-200">
+                    <i class="fas fa-book-reader text-purple-600"></i>
+                    <span>Issue Book</span>
+                </button>
+                <button class="flex items-center justify-center space-x-2 bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition duration-200">
+                    <i class="fas fa-chart-pie text-orange-600"></i>
+                    <span>Reports</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Notifications -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Notifications</h2>
+            <div class="space-y-4" id="recentNotifications">
+                <div class="text-center text-gray-500 py-4">Loading notifications...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Barcode Scanner Modal -->
+<div id="barcodeScannerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">Scan Barcode</h3>
+            <button class="text-gray-500 hover:text-gray-700" onclick="closeBarcodeScanner()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <div id="interactive" class="viewport bg-gray-100 h-64 rounded-lg"></div>
+            <div class="text-center text-sm text-gray-600">
+                Position the barcode within the frame to scan
+            </div>
+            <div id="scanResult" class="hidden p-4 rounded-lg"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+<script>
+    // Dashboard Data Loading
+    async function loadDashboardData() {
+        try {
+            const stats = await api.get('/transactions/stats');
+            
+            // Update statistics
+            document.getElementById('totalBooks').textContent = stats.total_books || 0;
+            document.getElementById('booksIssued').textContent = stats.total_issued || 0;
+            document.getElementById('booksOverdue').textContent = stats.total_overdue || 0;
+            document.getElementById('activeUsers').textContent = stats.total_active_users || 0;
+            
+            // Load recent transactions
+            const transactions = await api.get('/transactions?limit=5');
+            updateRecentTransactions(transactions.transactions);
+            
+            // Load notifications
+            loadNotifications();
+            
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+            showToast('Failed to load dashboard data', 'error');
+        }
+    }
+
+    // Update Recent Transactions Table
+    function updateRecentTransactions(transactions) {
+        const tbody = document.getElementById('recentTransactions');
+        tbody.innerHTML = '';
+        
+        if (!transactions || transactions.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-gray-500">No recent transactions</td>
+                </tr>
+            `;
+            return;
+        }
+        
+        transactions.forEach(transaction => {
+            const statusColor = {
+                'Issued': 'text-yellow-600 bg-yellow-100',
+                'Returned': 'text-green-600 bg-green-100',
+                'Overdue': 'text-red-600 bg-red-100'
+            }[transaction.status];
+            
+            tbody.innerHTML += `
+                <tr class="border-b">
+                    <td class="py-3">${transaction.book_title}</td>
+                    <td class="py-3">${transaction.user_name}</td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 rounded-full text-sm ${statusColor}">
+                            ${transaction.status}
+                        </span>
+                    </td>
+                    <td class="py-3">${new Date(transaction.issue_date).toLocaleDateString()}</td>
+                    <td class="py-3">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // Load Notifications
+    async function loadNotifications() {
+        const container = document.getElementById('recentNotifications');
+        
+        try {
+            // Simulated notifications - replace with actual API call
+            const notifications = [
+                { type: 'overdue', message: '3 books are overdue today', time: '2 hours ago' },
+                { type: 'return', message: 'Book "Python Programming" has been returned', time: '4 hours ago' },
+                { type: 'issue', message: 'New book issue request from John Doe', time: '5 hours ago' }
+            ];
+            
+            container.innerHTML = notifications.map(notification => `
+                <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-${notification.type === 'overdue' ? 'exclamation-circle text-red-500' : 
+                                        notification.type === 'return' ? 'check-circle text-green-500' : 
+                                        'bell text-blue-500'} text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800">${notification.message}</p>
+                        <p class="text-xs text-gray-500 mt-1">${notification.time}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+        } catch (error) {
+            console.error('Error loading notifications:', error);
+            container.innerHTML = `
+                <div class="text-center text-gray-500 py-4">
+                    Failed to load notifications
+                </div>
+            `;
+        }
+    }
+
+    // Barcode Scanner
+    let quaggaInstance = null;
+
+    function initBarcodeScanner() {
+        if (quaggaInstance) {
+            quaggaInstance.stop();
+        }
+
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector("#interactive"),
+                constraints: {
+                    facingMode: "environment"
+                },
+            },
+            decoder: {
+                readers: ["ean_reader", "ean_8_reader", "code_128_reader", "code_39_reader"]
+            }
+        }, function(err) {
+            if (err) {
+                console.error(err);
+                showToast('Failed to initialize barcode scanner', 'error');
+                return;
+            }
+            quaggaInstance = Quagga;
+            Quagga.start();
+        });
+
+        Quagga.onDetected(function(result) {
+            const code = result.codeResult.code;
+            document.getElementById('scanResult').innerHTML = `
+                <div class="bg-green-100 text-green-800 p-4 rounded-lg">
+                    <p class="font-semibold">Barcode Detected:</p>
+                    <p class="font-mono">${code}</p>
+                </div>
+            `;
+            document.getElementById('scanResult').classList.remove('hidden');
+            
+            // Stop scanning after successful detection
+            if (quaggaInstance) {
+                quaggaInstance.stop();
+            }
+        });
+    }
+
+    function openBarcodeScanner() {
+        document.getElementById('barcodeScannerModal').classList.remove('hidden');
+        initBarcodeScanner();
+    }
+
+    function closeBarcodeScanner() {
+        document.getElementById('barcodeScannerModal').classList.add('hidden');
+        if (quaggaInstance) {
+            quaggaInstance.stop();
+        }
+    }
+
+    // Event Listeners
+    document.getElementById('scanBarcodeBtn').addEventListener('click', openBarcodeScanner);
+    document.getElementById('exportDataBtn').addEventListener('click', async () => {
+        try {
+            window.location.href = '/api/transactions/export';
+        } catch (error) {
+            showToast('Failed to export data', 'error');
+        }
+    });
+
+    // Initialize Dashboard
+    loadDashboardData();
+</script>
+{% endblock %}
