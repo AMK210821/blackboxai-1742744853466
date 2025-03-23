@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - VREC Library Management System</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .login-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .form-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container min-h-screen flex items-center justify-center p-4">
+        <div class="form-container w-full max-w-md rounded-xl shadow-2xl p-8">
+            <!-- Logo and Title -->
+            <div class="text-center mb-8">
+                <i class="fas fa-book-reader text-5xl text-blue-600 mb-4"></i>
+                <h1 class="text-2xl font-bold text-gray-800">VREC Library Management System</h1>
+                <p class="text-gray-600 mt-2">Please login to continue</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="space-y-6">
+                <!-- Role Selection -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Login As</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <button type="button" 
+                                class="role-btn py-2 px-4 rounded-lg border-2 border-gray-300 hover:border-blue-500 focus:outline-none transition-colors duration-200"
+                                data-role="admin">
+                            <i class="fas fa-user-shield text-xl mb-1"></i>
+                            <span class="block text-sm">Admin</span>
+                        </button>
+                        <button type="button" 
+                                class="role-btn py-2 px-4 rounded-lg border-2 border-gray-300 hover:border-blue-500 focus:outline-none transition-colors duration-200"
+                                data-role="faculty">
+                            <i class="fas fa-chalkboard-teacher text-xl mb-1"></i>
+                            <span class="block text-sm">Faculty</span>
+                        </button>
+                        <button type="button" 
+                                class="role-btn py-2 px-4 rounded-lg border-2 border-gray-300 hover:border-blue-500 focus:outline-none transition-colors duration-200"
+                                data-role="student">
+                            <i class="fas fa-user-graduate text-xl mb-1"></i>
+                            <span class="block text-sm">Student</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Email/Username -->
+                <div>
+                    <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Email/Username</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="fas fa-envelope text-gray-400"></i>
+                        </span>
+                        <input type="text" 
+                               id="email" 
+                               class="w-full pl-10 pr-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200"
+                               placeholder="Enter your email or username">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </span>
+                        <input type="password" 
+                               id="password" 
+                               class="w-full pl-10 pr-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200"
+                               placeholder="Enter your password">
+                        <button type="button" 
+                                id="togglePassword"
+                                class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                        class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Login
+                </button>
+            </form>
+
+            <!-- Registration Link -->
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">
+                    Don't have an account? 
+                    <a href="/register" class="text-blue-600 hover:text-blue-700 font-semibold">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <script>
+        // Toast notification function
+        function showToast(message, type = 'error') {
+            const toast = document.createElement('div');
+            toast.className = `${type === 'error' ? 'bg-red-500' : 'bg-green-500'} text-white px-6 py-3 rounded-lg shadow-lg mb-3`;
+            toast.style.animation = 'slideIn 0.3s ease-out';
+            toast.textContent = message;
+
+            const container = document.getElementById('toastContainer');
+            container.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Role selection handling
+        const roleButtons = document.querySelectorAll('.role-btn');
+        let selectedRole = null;
+
+        roleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                roleButtons.forEach(btn => {
+                    btn.classList.remove('border-blue-500', 'bg-blue-50');
+                });
+                button.classList.add('border-blue-500', 'bg-blue-50');
+                selectedRole = button.dataset.role;
+            });
+        });
+
+        // Password visibility toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.innerHTML = `<i class="fas fa-${type === 'password' ? 'eye' : 'eye-slash'} text-gray-400 hover:text-gray-600"></i>`;
+        });
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedRole) {
+                showToast('Please select a role');
+                return;
+            }
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showToast('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        role: selectedRole
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
+                }
+
+                // Store token and redirect
+                localStorage.setItem('token', data.token);
+                window.location.href = `/${selectedRole}-dashboard`;
+
+            } catch (error) {
+                showToast(error.message);
+            }
+        });
+
+        // Add keydown event for Enter key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                document.querySelector('button[type="submit"]').click();
+            }
+        });
+    </script>
+</body>
+</html>
